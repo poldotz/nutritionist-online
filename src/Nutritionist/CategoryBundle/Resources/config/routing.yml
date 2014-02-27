@@ -1,0 +1,5 @@
+category_homepage:
+    path:  /hello/{name}
+    defaults: { _controller: CategoryBundle:Default:index }
+
+
