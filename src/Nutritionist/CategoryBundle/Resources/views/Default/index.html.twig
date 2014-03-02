@@ -1,0 +1,8 @@
+{% extends '::base.html.twig' %}
+    {% block body %}
+        {%  if results %}
+            Total Category found: {{  results.total_category }}
+            <br/>
+            Total Category imported: {{ results.imported_category}}
+        {% endif %}
+    {% endblock body %}

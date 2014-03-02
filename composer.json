@@ -16,7 +16,8 @@
         "sensio/framework-extra-bundle": "~3.0",
         "sensio/generator-bundle": "~2.3",
         "incenteev/composer-parameter-handler": "~2.0",
-        "stof/doctrine-extensions-bundle": "dev-master"
+        "stof/doctrine-extensions-bundle": "dev-master",
+        "fabpot/goutte": "v1.0.5"
     },
     "scripts": {
         "post-install-cmd": [

@@ -1,5 +1,21 @@
+nutritionist_food_nutrient:
+    resource: "@NutritionistFoodNutrientBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+nutritionist_nutrient:
+    resource: "@NutritionistNutrientBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+nutritionist_food:
+    resource: "@NutritionistFoodBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 nutritionist_category:
     resource: "@NutritionistCategoryBundle/Controller/"
     type:     annotation
     prefix:   /
+
 
