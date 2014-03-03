@@ -123,4 +123,83 @@ class Nutrient
     }
 
 
+
+    /**
+     * Set created
+     *
+     * @param \DateTime $created
+     * @return Nutrient
+     */
+    public function setCreated($created)
+    {
+        $this->created = $created;
+
+        return $this;
+    }
+
+    /**
+     * Get created
+     *
+     * @return \DateTime 
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    /**
+     * Set updated
+     *
+     * @param \DateTime $updated
+     * @return Nutrient
+     */
+    public function setUpdated($updated)
+    {
+        $this->updated = $updated;
+
+        return $this;
+    }
+
+    /**
+     * Get updated
+     *
+     * @return \DateTime 
+     */
+    public function getUpdated()
+    {
+        return $this->updated;
+    }
+
+    /**
+     * Add foodNutrients
+     *
+     * @param \Nutritionist\FoodNutrientBundle\Entity\FoodNutrient $foodNutrients
+     * @return Nutrient
+     */
+    public function addFoodNutrient(\Nutritionist\FoodNutrientBundle\Entity\FoodNutrient $foodNutrients)
+    {
+        $this->foodNutrients[] = $foodNutrients;
+
+        return $this;
+    }
+
+    /**
+     * Remove foodNutrients
+     *
+     * @param \Nutritionist\FoodNutrientBundle\Entity\FoodNutrient $foodNutrients
+     */
+    public function removeFoodNutrient(\Nutritionist\FoodNutrientBundle\Entity\FoodNutrient $foodNutrients)
+    {
+        $this->foodNutrients->removeElement($foodNutrients);
+    }
+
+    /**
+     * Get foodNutrients
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getFoodNutrients()
+    {
+        return $this->foodNutrients;
+    }
 }

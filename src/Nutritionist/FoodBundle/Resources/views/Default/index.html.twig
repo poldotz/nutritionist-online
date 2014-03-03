@@ -1,1 +1,8 @@
-Hello {{ name }}!
+{% extends '::base.html.twig' %}
+    {% block body %}
+        {%  if results %}
+            Total Food found: {{  results.total_food }}
+            <br/>
+            Total Food imported: {{ results.imported_food}}
+        {% endif %}
+    {% endblock body %}

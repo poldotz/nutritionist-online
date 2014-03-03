@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
 use Nutritionist\FoodBundle\Entity\Food;
-use Nutritionist\FoodBundle\Entity\Nutrient;
+use Nutritionist\NutrientBundle\Entity\Nutrient;
 
 /**
  * FoodNutrient

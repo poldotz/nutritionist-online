@@ -9,11 +9,22 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 class DefaultController extends Controller
 {
     /**
-     * @Route("/hello/{name}")
+     * @Route("/food-nutrient/update")
      * @Template()
      */
-    public function indexAction($name)
+    public function indexAction()
     {
-        return array('name' => $name);
+        /*
+         * Load FoodNutrient Fixtures;
+         */
+        $em = $this->getDoctrine()->getManager();
+        try{
+           $results = $em->getRepository('NutritionistFoodNutrientBundle:FoodNutrient')->loadFoodNutrient();
+           return array('results'=> $results);
+        }
+        catch(\Exception $e){
+            return $e->getMessage();
+        }
+
     }
 }

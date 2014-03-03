@@ -18,7 +18,6 @@ class DefaultController extends Controller
         /*
          *  Load Nutrient Fixtures;
          */
-        var_dump('ok');
         $em = $this->getDoctrine()->getManager();
         try{
          $results = $em->getRepository('NutritionistNutrientBundle:Nutrient')->loadNutrients();

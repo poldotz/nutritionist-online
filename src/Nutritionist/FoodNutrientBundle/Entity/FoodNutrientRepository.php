@@ -3,6 +3,8 @@
 namespace Nutritionist\FoodNutrientBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use Goutte\Client;
+use Symfony\Component\DomCrawler\Link;
 
 /**
  * FoodNutrientRepository
@@ -12,4 +14,128 @@ use Doctrine\ORM\EntityRepository;
  */
 class FoodNutrientRepository extends EntityRepository
 {
+
+    public function loadFoodNutrient($url = 'http://www.inran.it/646/tabelle_di_composizione_degli_alimenti.html?alimento=&nutriente=tutti&categoria=tutte&quant=100&submitted1=TRUE&sendbutton=Cerca')
+    {
+        set_time_limit (14400);
+        $em = $this->getEntityManager();
+        $client = new Client();
+        $crawler = $client->request('GET',$url, array('curl.options' => array(CURLOPT_CONNECTTIMEOUT=> 90,CURLOPT_CONNECTTIMEOUT_MS=>15000)));
+        $nodes = $crawler->filter('.elencoalim');
+        if ($nodes->count())
+        {
+            try{
+                $total_foodNutrient = 0;
+                $imported_foodNutrient = 0;
+                foreach($nodes as $node){
+
+                    $href="http://www.inran.it";
+                    $href .= $node->firstChild->getAttribute('href');
+                    $link = new Link($node->firstChild,$href);
+                    $crawler_link = $client->click($link);
+                    $tab1 = $crawler_link->filter('.Tabella1');
+
+                    // Food
+                    $trs = $tab1->first()->children();
+                    $tr = $trs->first();
+                    $th = $tr->children();
+                    $food_name = $th->text(); //food
+
+                    $food_repo = $em->getRepository('NutritionistFoodBundle:Food');
+                    $food = $food_repo->findOneByName($food_name);
+
+                    foreach($tab1->eq(1)->filterXPath('//tr') as $tr_node){
+
+                        if(is_object($tr_node->childNodes->item(0)) and $tr_node->childNodes->item(0)->tagName == 'td'){
+                            $td = $tr_node->childNodes->item(0);
+                            $nutrient_name = trim($this->ediblePartMisureUnit($td->textContent));
+                            if(strlen($nutrient_name)>0){
+                                $nutrient = $em->getRepository('NutritionistNutrientBundle:Nutrient')->findByNameLike($nutrient_name);
+                                if(!$nutrient){
+                                    continue;
+                                }
+                                $total_foodNutrient +=1;
+                            }
+                            else{
+                                continue;
+                            }
+                        }
+                        else{
+                            continue;
+                        }
+
+                        if(is_object($tr_node->childNodes->item(1)) and $tr_node->childNodes->item(1)->nodeName == 'td'){
+                            $value = 0;
+                            $value = trim($tr_node->childNodes->item(1)->textContent);
+                            if(is_numeric($value)){
+                                $value = $value;
+                                $note = "";
+                            }
+                            elseif(is_string($value)){
+                                $note = $value;
+                                $value = 0;
+                            }
+                            else{
+                                $note = $value;
+                                $value = 0;
+
+                            }
+                        }
+                        $foodNutrient= $this->findOneBy(array('food'=>$food->getId(),'nutrient'=>$nutrient->getId()));
+                        if(!$foodNutrient){
+                            $foodNutrient = new FoodNutrient();
+                        }
+                        else{
+                            continue;
+                        }
+                        $foodNutrient->setFood($food);
+                        $foodNutrient->setNutrient($nutrient);
+                        $foodNutrient->setFoodNutrient(number_format($value,2,'.',','));
+                        $foodNutrient->setNote($note);
+                        $em->persist($foodNutrient);
+                        $imported_foodNutrient +=1;
+                        $em->flush();
+                        time_nanosleep(0, 500000000);
+                    }
+                }
+                return array('total_foodNutrient'=>$total_foodNutrient,'imported_foodNutrient'=>$imported_foodNutrient);
+            }
+            catch(\Exception $e){
+                return $e;
+            }
+
+
+        }
+
+    }
+    private function ediblePartMisureUnit($textContent)
+    {
+        $start_pos = 0;
+        $end_pos = 0;
+        $start_pos = strpos($textContent,'(');
+        $end_pos = strpos($textContent,')');
+        $base_name = trim(substr($textContent,0,$start_pos));
+        if($start_pos >0 && $end_pos > 0){
+            $misure_unit = trim(substr($textContent,$start_pos+1,($end_pos - $start_pos)-1));
+            switch($misure_unit){
+                case "g":
+                    $misure_unit = "(g/100g p.e.)";
+                    break;
+                case "mg":
+                    $misure_unit = "(mg/100g p.e.)";
+                    break;
+                case "kcal":
+                    $misure_unit = "(kcal/100g p.e.)";
+                    break;
+                case "kJ":
+                    $misure_unit = "(kJ/100g p.e.)";
+                    break;
+                default:
+                    $misure_unit = "";
+            }
+        }
+        return $base_name." ".$misure_unit;
+    }
+
+
 }

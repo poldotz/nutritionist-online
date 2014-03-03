@@ -46,4 +46,25 @@ class NutrientRepository extends EntityRepository
         }
 
     }
+
+    public function findByNameLike($str = ''){
+        if(strlen($str)){
+
+            $qb = $this->createQueryBuilder('n');
+            try{
+            return $result = $qb->where($qb->expr()
+                ->like('n.name',':name'))
+                ->setParameter('name',$str."%")
+                ->getQuery()
+                ->getOneOrNullResult();
+
+
+            }
+            catch(\Exception $e){
+                $nutrient = new Nutrient();
+            }
+            return $nutrient;
+
+        }
+    }
 }

@@ -5,6 +5,8 @@ namespace Nutritionist\FoodBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Nutritionist\CategoryBundle\Entity\Category;
+use Doctrine\Common\Collections\ArrayCollection;
+
 
 
 /**
@@ -39,7 +41,7 @@ class Food
 
     /**
      * @var \DateTime
-     *@ Gedmo\Timestampable(on="create")
+     * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="created", type="datetime")
      */
     private $created;
@@ -160,5 +162,38 @@ class Food
     public function getUpdated()
     {
         return $this->updated;
+    }
+
+    /**
+     * Add foodNutrients
+     *
+     * @param \Nutritionist\FoodNutrientBundle\Entity\FoodNutrient $foodNutrients
+     * @return Food
+     */
+    public function addFoodNutrient(\Nutritionist\FoodNutrientBundle\Entity\FoodNutrient $foodNutrients)
+    {
+        $this->foodNutrients[] = $foodNutrients;
+
+        return $this;
+    }
+
+    /**
+     * Remove foodNutrients
+     *
+     * @param \Nutritionist\FoodNutrientBundle\Entity\FoodNutrient $foodNutrients
+     */
+    public function removeFoodNutrient(\Nutritionist\FoodNutrientBundle\Entity\FoodNutrient $foodNutrients)
+    {
+        $this->foodNutrients->removeElement($foodNutrients);
+    }
+
+    /**
+     * Get foodNutrients
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getFoodNutrients()
+    {
+        return $this->foodNutrients;
     }
 }
