@@ -95,7 +95,7 @@ class FoodNutrientRepository extends EntityRepository
                         $em->persist($foodNutrient);
                         $imported_foodNutrient +=1;
                         $em->flush();
-                        time_nanosleep(0, 500000000);
+                        //time_nanosleep(0, 200000000);
                     }
                 }
                 return array('total_foodNutrient'=>$total_foodNutrient,'imported_foodNutrient'=>$imported_foodNutrient);
